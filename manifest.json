@@ -1,0 +1,11 @@
+{
+    "name": "chrome extension example",
+    "version": "1.0",
+    "description": "example",
+    "permissions": ["storage"],
+    "action": {
+      "default_icon": "icon.png",
+      "default_popup": "popup.html"
+    },
+    "manifest_version": 3
+  }
