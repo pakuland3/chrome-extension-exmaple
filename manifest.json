@@ -2,10 +2,16 @@
     "name": "chrome extension example",
     "version": "1.0",
     "description": "example",
-    "permissions": ["storage"],
+    "permissions": ["activeTab","scripting"],
     "action": {
       "default_icon": "icon.png",
       "default_popup": "popup.html"
     },
+    "content_scripts":[
+      {
+        "matches":["https://learn.hoseo.ac.kr/calendar/*"],
+        "js":["content.js"]
+      }
+    ],
     "manifest_version": 3
   }
