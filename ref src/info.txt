@@ -1,0 +1,18 @@
+div class="calendarwrapper"
+주목
+tbody의 생성과정이 나타난 코드를 봐야함
+first.js가 페이지 생성 과정에 참여하는 js 파일이고
+first.js의 폴더와 동위 폴더들은 모양 생성에 도움을 주는 라이브러리이거나
+jQuery임 -> 파악 완료
+
+first.js vsc가 읽는 과정을 기다려야함
+
+jQuery써서 ajax를 구현해 쿼리보내고 가져옴
+
+ajax 기법을 사용해 서버랑 통신하여 정보를 가져오는 거임
+
+reference : https://www.youtube.com/watch?v=e4Um6Re5ZwE - 생활코딩 ajax
+
+ajax 생활코딩 강의 보기!!
+
+사실 지금은 jQuery 강의를 봐야됨
