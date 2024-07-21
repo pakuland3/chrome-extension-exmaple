@@ -42,6 +42,12 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
                 reloadAssignments();
             }
         });
+    }
+});
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'getSessionKeyFromStorage') {
+      var sessionKey = localStorage.getItem('MoodleSession') || sessionStorage.getItem('MoodleSession');
+      sendResponse({ sessionKey: sessionKey });
     }
 });

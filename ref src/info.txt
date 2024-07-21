@@ -16,3 +16,10 @@ reference : https://www.youtube.com/watch?v=e4Um6Re5ZwE - 생활코딩 ajax
 ajax 생활코딩 강의 보기!!
 
 사실 지금은 jQuery 강의를 봐야됨
+
+보니까 service.php 접속 시에 JSON도 같이 넘겨줘야 되는 거 같음
+
+JSON 구성 내용 찾음
+
+courseid=1;
+categoryid=0;

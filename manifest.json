@@ -7,7 +7,11 @@
       "scripting",
       "tabs",
       "webNavigation",
-      "storage"
+      "storage",
+      "cookies"
+    ],
+    "host_permissions": [
+      "*://learn.hoseo.ac.kr/"
     ],
     "action": {
       "default_icon": "icon.png",
