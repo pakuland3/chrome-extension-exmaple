@@ -47,7 +47,16 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'getSessionKeyFromStorage') {
-      var sessionKey = localStorage.getItem('MoodleSession') || sessionStorage.getItem('MoodleSession');
-      sendResponse({ sessionKey: sessionKey });
+        var scriptTagText=document.getElementsByTagName("script")[2].innerText;
+        var sesskey="";
+        var adding=0;
+        for(var i=80;i<scriptTagText.length;i++){
+            if(scriptTagText.charAt(i-4)=='y' && scriptTagText.charAt(i-1)=='\"') adding=1;
+            if(adding && scriptTagText.charAt(i)=='\"') break;
+            if(adding) sesskey+=scriptTagText.charAt(i);
+        }
+        sendResponse({sessionKey: sesskey});
+    //   var sessionKey = localStorage.getItem('MoodleSession') || sessionStorage.getItem('MoodleSession');
+    //   sendResponse({ sessionKey: sessionKey });
     }
 });
