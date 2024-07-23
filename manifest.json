@@ -22,7 +22,8 @@
   "content_scripts":[
     {
       "matches":["https://learn.hoseo.ac.kr/calendar/*"],
-      "js":["content.js","jquery-3.7.1.min.js"]
+      "js":["jquery-3.7.1.min.js",
+      "content.js"]
     }
   ],
   "background":{

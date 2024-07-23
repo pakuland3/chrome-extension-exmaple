@@ -22,43 +22,43 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
                     for(var k=0;k<a.length;k++){
                         var curString=a[k].title;
                         var href=a[k].href; // get url to crawling 
-                        var $html,differ;
-                        $(document).ready(function() {
-                            // 특정 a 태그 선택 (예: 첫 번째 a 태그)
-                            // var url = $('a').first().attr('href');
-                            if(assignmentMap.has(curString)){
-                                a[k--].remove();
-                            }
-                            else{
-                                assignmentMap.set(curString,1);
-                                if (href) {
-                                    $.ajax({
-                                      url: href,
-                                      method: 'GET',
-                                      success: function(data) {
-                                        // 원하는 변수를 사용하여 HTML 데이터 저장
-                                        $html=$(data);
-                                        var $cardbody=$html.find(".card card-body");
-                                        var expireDate=$cardbody.find("span").innerText;
-                                        console.log(expireDate);
-                                        var endyear=expireDate.substr(33,4);
-                                        var endmonth=expireDate.substr(38,2);
-                                        var endday=expireDate.substr(41,2);
-                                        var endhour=expireDate.substr(43,2);
-                                        var endmin=expireDate.substr(45,2);
-                                        var endhour=expireDate.substr(43,2);
-                                        differ=365*(endyear-year)+30*(endmonth-month)+endday-day;
-                                      },
-                                      error: function(error) {
-                                        console.error('Error fetching HTML:', error);
-                                      }
-                                    });
-                                  } else {
-                                    console.error('No href found for the selected a tag');
-                                  }
-                            }
-                          });
-                          if(differ<0) a[k--].remove();
+                        if(assignmentMap.has(curString)) a[k--].remove();
+                        else{
+                            assignmentMap.set(curString,1);
+                            $(document).ready(function() {
+                                // 특정 a 태그 선택 (예: 첫 번째 a 태그)
+                                // var url = $('a').first().attr('href');
+                                    if (href) {
+                                        $.ajax({
+                                        url: href,
+                                        method: 'GET',
+                                        success: function(data) {
+                                            // 원하는 변수를 사용하여 HTML 데이터 저장
+                                            var $html=$(data);
+                                            var $span=$html.find(".card card-body").find("span");
+                                            var expireDate=new Array;
+                                            $span.each(function (){
+                                                expireDate.push($(this).text());
+                                                console.log("im here");
+                                            });
+                                            for(var i=0;i<expireDate.length;i++) console.log(expireDate[i]);
+                                            // var endyear=parseInt(expireDate.substr(33,4));
+                                            // var endmonth=parseInt(expireDate.substr(38,2));
+                                            // var endday=parseInt(expireDate.substr(41,2));
+                                            // var endhour=parseInt(expireDate.substr(44,2));
+                                            // var endmin=parseInt(expireDate.substr(47,2));
+                                            // var differ=365*(endyear-year)+30*(endmonth-month)+endday-day;
+                                            // if(differ>0) a[k--].remove();
+                                        },
+                                        error: function(error) {
+                                            console.error('Error fetching HTML:', error);
+                                        }
+                                        });
+                                    } else {
+                                        console.error('No href found for the selected a tag');
+                                    }
+                            });
+                        }
                     }
                 }
             }
