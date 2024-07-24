@@ -1,7 +1,28 @@
 chrome.storage.sync.get(['isScriptEnabled'], function (result) {
     if (result.isScriptEnabled) {
-
-        function fetchHTML(href,year,month,day) {
+        function fetchDone(url,assignmentName){
+            return new Promise((resolve,reject)=>{
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    xhrFields: {
+                        withCredentials: true // 쿠키를 포함하여 요청을 보냄
+                    },
+                    success: function(data) {
+                        // 원하는 변수를 사용하여 HTML 데이터 저장
+                        var $html=$(data);
+                        var done=1;
+                        var checkString=$html.find(`:contains(\"${assignmentName}\")`).parent(".mod-indent-outer").find(".actions").find(".autocompletion").children(":eq(0)").attr("class");
+                        if(checkString && checkString[checkString.length-1]=='n') done=0;
+                        resolve(done);
+                    },
+                    error: function(error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+        async function fetchHTML(href,year,month,day) {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: href,
@@ -12,6 +33,7 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
                     success: function(data) {
                         // 원하는 변수를 사용하여 HTML 데이터 저장
                         var $html = $(data);
+                        var doneurl=$html.find(".site-info").find("h1").find("a").attr("href");
                         var expireDate = $html.find(".card:eq(2)").text();
                         var endyear = parseInt(expireDate.substr(33, 4));
                         var endmonth = parseInt(expireDate.substr(38, 2));
@@ -19,7 +41,7 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
                         var endhour = parseInt(expireDate.substr(44, 2));
                         var endmin = parseInt(expireDate.substr(47, 2));
                         var differ = 365 * (endyear - year) + 30 * (endmonth - month) + (endday - day);
-                        resolve({ endyear, endmonth, endday, differ });
+                        resolve({ differ, doneurl});
                     },
                     error: function(error) {
                         reject(error);
@@ -56,8 +78,10 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
                             assignmentMap.set(curString, 1);
                             if (href) {
                                 try {
-                                    let { endyear, endmonth, endday, differ } = await fetchHTML(href,year,month,day);
-                                    console.log(`${endyear}/${endmonth}/${endday}/${differ}`);
+                                    let { differ, doneurl } = await fetchHTML(href,year,month,day);
+                                    let done= await fetchDone(doneurl,curString);
+                                    // console.log(`${endyear}/${endmonth}/${endday}/${differ}/${done}`);
+                                    if(done==1) a[k].style.color="green";
                                     if (differ>0) a[k--].remove();
                                 } catch (error) {
                                     console.error('Error fetching HTML:', error);
