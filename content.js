@@ -1,6 +1,13 @@
 chrome.storage.sync.get(['isScriptEnabled'], function (result) {
     if (result.isScriptEnabled) {
-        function fetchDone(url,assignmentName){
+        function checkDone($html,assignmentName){
+            var done=1;
+            var checkString=$html.find(`:contains(\"${assignmentName}\")`).parent(".mod-indent-outer").find(".actions").find(".autocompletion").children(":eq(0)").attr("class");
+            if(checkString && checkString[checkString.length-1]=='n') done=0;
+            return done;
+        }
+
+        function justFetch(url){
             return new Promise((resolve,reject)=>{
                 $.ajax({
                     url: url,
@@ -11,10 +18,7 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
                     success: function(data) {
                         // 원하는 변수를 사용하여 HTML 데이터 저장
                         var $html=$(data);
-                        var done=1;
-                        var checkString=$html.find(`:contains(\"${assignmentName}\")`).parent(".mod-indent-outer").find(".actions").find(".autocompletion").children(":eq(0)").attr("class");
-                        if(checkString && checkString[checkString.length-1]=='n') done=0;
-                        resolve(done);
+                        resolve($html);
                     },
                     error: function(error) {
                         reject(error);
@@ -58,6 +62,7 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
             var rows=tables[0].getElementsByTagName("tr"); // rows for 4-5 weeks of month
             
             const assignmentMap=new Map();
+            const urlMap=new Map();
 
             for(var i=rows.length-1;i>0;i--){
                 var ul=rows[i].getElementsByTagName("ul"); // ul HTMLCollection for rows
@@ -79,7 +84,13 @@ chrome.storage.sync.get(['isScriptEnabled'], function (result) {
                             if (href) {
                                 try {
                                     let { differ, doneurl } = await fetchHTML(href,year,month,day);
-                                    let done= await fetchDone(doneurl,curString);
+                                    var done;
+                                    if(!urlMap.has(doneurl)){
+                                        var $tmp=await justFetch(doneurl);
+                                        urlMap.set(doneurl,$tmp);
+                                    }
+                                    var $html=urlMap.get(doneurl);
+                                    done=checkDone($html,curString);
                                     // console.log(`${endyear}/${endmonth}/${endday}/${differ}/${done}`);
                                     if(done==1) a[k].style.color="green";
                                     if (differ>0) a[k--].remove();
